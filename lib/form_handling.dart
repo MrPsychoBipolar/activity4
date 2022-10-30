@@ -1,3 +1,4 @@
+import 'package:activity4_virtudes_cabaluna/page_one.dart';
 import 'package:flutter/material.dart';
 
 class FormHandlingPage extends StatefulWidget {
@@ -17,7 +18,6 @@ class _FormHandlingPageState extends State<FormHandlingPage> {
   TextEditingController birthdateController = TextEditingController();
   TextEditingController courseController = TextEditingController();
   TextEditingController sectionController = TextEditingController();
-  TextEditingController textController = TextEditingController();
   var formKeyUsage = GlobalKey<FormState>();
 
 
@@ -92,48 +92,42 @@ class _FormHandlingPageState extends State<FormHandlingPage> {
                 return (value == '') ? 'Please enter Student Section' : null;
               },
             ),
-            const SizedBox(height: 20),
-            DropdownButton(
-              hint: const Text('Gender'),
-              dropdownColor: Colors.grey,
-              icon: const Icon(Icons.arrow_drop_down_circle_rounded),
-              iconSize: 35,
-              isExpanded: true,
-              underline: const SizedBox(),
-              style: const TextStyle(
-                color: Colors.black,
-                fontSize: 20,
-              ),
-              value: genderChosen,
-              onChanged: (newGender){
-                setState(() {
-                  genderChosen = newGender as String?;
-                });
-              },
-              items: genders.map((newValue) {
-                return DropdownMenuItem(
-                  value: newValue,
-                  child: Text(newValue),
-                );
-              }).toList(),
-            ),
             const SizedBox(height: 40),
+            DropdownButton<String>(
+                value: genderChosen,
+                items: genders.map<DropdownMenuItem<String>>(
+                      (newValue) {
+                    return DropdownMenuItem<String>(
+                      value: newValue,
+                      child: Text(newValue),
+                    );
+                  },
+                ).toList(),
+                onChanged: (String? newValue) {
+                  setState(() {
+                    genderChosen = newValue!;
+                  });
+                }),
             SizedBox(
               height: 40,
-              child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.pop(context,);
-                    var isFormValid = formKeyUsage.currentState!.validate();
-                    if (isFormValid) {
-
-                    }
-                  },
-                  child: const Text('Submit')
-              ),
-            )
+              child: ElevatedButton(onPressed: () {
+                var formValid = formKeyUsage.currentState!.validate();
+                if (formValid){
+                  Navigator.pop(context, Students(
+                    id: idController.text,
+                    name: nameController.text,
+                    birthday: birthdateController.text,
+                    course: courseController.text,
+                    yearandSection: sectionController.text,
+                    gender: genderChosen,
+                  ));
+                }
+              }, child: const Text("Submit")),
+            ),
           ],
         ),
       ),
     );
   }
 }
+
